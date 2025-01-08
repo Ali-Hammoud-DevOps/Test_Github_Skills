@@ -1,0 +1,52 @@
+name: Check Pull Request
+on: pull_request
+
+jobs:
+  check_pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if PR target branch is ok
+        run: |
+          branch_name=${GITHUB_HEAD_REF}
+          echo "pr branch name: $branch_name"
+          
+          target_branch=${GITHUB_BASE_REF}
+          echo "target branch: $target_branch"
+          
+          # Define regex patterns for the new naming conventions
+          feature_regex="^feature/[a-z0-9\-]+$"
+          bugfix_regex="^bugfix/[a-z0-9\-]+$"
+          release_regex="^release/[v0-9]+\.[0-9]+\.[0-9]+$"
+          hotfix_regex="^hotfix/[a-z0-9\-]+$"
+          
+          # Check if the branch name matches any of the above patterns
+          if [[ "$branch_name" =~ $feature_regex ]]; then
+            echo "Branch name matches the 'feature' pattern."
+            if [[ "$target_branch" != "develop" && "$target_branch" != "main" ]]; then
+              echo "but doesn't match target branch"
+              exit 1
+            fi
+          elif [[ "$branch_name" =~ $bugfix_regex ]]; then
+            echo "Branch name matches the 'bugfix' pattern."
+            if [[ "$target_branch" != "develop" && "$target_branch" != "main" ]]; then
+              echo "but doesn't match target branch"
+              exit 1
+            fi
+          elif [[ "$branch_name" =~ $release_regex ]]; then
+            echo "Branch name matches the 'release' pattern."
+            if [[ "$target_branch" != "main" ]]; then
+              echo "but doesn't match target branch"
+              exit 1
+            fi
+          elif [[ "$branch_name" =~ $hotfix_regex ]]; then
+            echo "Branch name matches the 'hotfix' pattern."
+            if [[ "$target_branch" != "main" ]]; then
+              echo "but doesn't match target branch"
+              exit 1
+            fi
+          else
+            echo "Branch name does not match any recognized pattern. Exiting..."
+            exit 1
+          fi
+        shell: bash
