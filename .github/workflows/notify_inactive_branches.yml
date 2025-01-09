@@ -33,7 +33,8 @@ jobs:
           if [ -s inactive_branches.txt ]; then
             echo "Inactive branches found:"
             cat inactive_branches.txt
-            echo "::set-output name=inactive_branches::$(cat inactive_branches.txt | tr '\n' '|')"
+            inactive_branches=$(cat inactive_branches.txt | tr '\n' '|')
+            echo "::set-output name=inactive_branches::$inactive_branches"
           else
             echo "No inactive branches found."
             echo "::set-output name=inactive_branches::None"
@@ -55,7 +56,7 @@ jobs:
 
             The following branches have been inactive for over 30 days:
 
-            ${{ steps.get-inactive-branches.outputs.inactive_branches | replace('|', '\n') }}
+            ${{ steps.get-inactive-branches.outputs.inactive_branches }}
 
             Please review and take appropriate action.
 
