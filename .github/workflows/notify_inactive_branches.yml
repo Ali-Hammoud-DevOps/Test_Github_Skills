@@ -17,19 +17,21 @@ jobs:
         id: get-inactive-branches
         run: |
           git fetch --all
-          current_date=$(date +%s)
+          current_date=$(date +%s)  # Get current UNIX timestamp (seconds)
           echo "Inactive branches exceeding 30 days:" > inactive_branches.txt
 
           for branch in $(git for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:unix)' refs/heads/); do
             branch_name=$(echo $branch | awk '{print $1}')
             branch_date=$(echo $branch | awk '{print $2}')
-            branch_age=$(( (current_date - branch_date) / (60 * 60 * 24) ))
+            
+            branch_age_in_seconds=$((current_date - branch_date))
+            branch_age_in_days=$((branch_age_in_seconds / (60 * 60 * 24)))
 
-            if [ "$branch_age" -gt 30 ]; then
-              echo "$branch_name (inactive for $branch_age days)" >> inactive_branches.txt
+            if [ "$branch_age_in_days" -gt 30 ]; then
+              echo "$branch_name (inactive for $branch_age_in_days days)" >> inactive_branches.txt
             fi
           done
-
+          
           if [ -s inactive_branches.txt ]; then
             echo "Inactive branches found:"
             cat inactive_branches.txt
