@@ -2,7 +2,7 @@ name: Notify for Inactive Branches
 
 on:
   schedule:
-    - cron: "0 0 * * 0"  # Runs every Sunday at midnight
+    - cron: "0 8 1 * *"  # At 8:00 AM at the start of every month
   workflow_dispatch:  # Allow manual triggering of the action
 
 jobs:
@@ -21,29 +21,31 @@ jobs:
           echo "Inactive branches exceeding 30 days:" > inactive_branches.txt
 
           for branch in $(git for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:unix)' refs/heads/); do
-            # Extract branch name and commit timestamp
             branch_name=$(echo $branch | awk '{print $1}')
             branch_date=$(echo $branch | awk '{print $2}')
             branch_age=$(( (current_date - branch_date) / (60 * 60 * 24) ))
 
             if [ "$branch_age" -gt 30 ]; then
-              # Properly format the output and append to the inactive_branches.txt file
               echo "$branch_name (inactive for $branch_age days)" >> inactive_branches.txt
             fi
           done
 
-          # Display inactive branches in the workflow logs
-          cat inactive_branches.txt
-
-          # Set the inactive branches list as output
-          echo "::set-output name=inactive_branches::$(cat inactive_branches.txt)"
+          if [ -s inactive_branches.txt ]; then
+            echo "Inactive branches found:"
+            cat inactive_branches.txt
+            inactive_branches=$(cat inactive_branches.txt | tr '\n' '|')
+            echo "::set-output name=inactive_branches::$inactive_branches"
+          else
+            echo "No inactive branches found."
+            echo "::set-output name=inactive_branches::None"
+          fi
 
       - name: Send Email Notification
-        if: success()
+        if: steps.get-inactive-branches.outputs.inactive_branches != 'None'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
-          server_port: 587
+          server_port: 587 # Default SMTP port / 465 for SSL
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: Inactive Git Branches Notification
@@ -58,5 +60,5 @@ jobs:
 
             Please review and take appropriate action.
 
-            Regards,
+            Regards,  
             Ali Hammoud (DevOps Engineer)
