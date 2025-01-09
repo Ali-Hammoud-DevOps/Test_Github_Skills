@@ -14,6 +14,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Get Inactive Branches
+        id: get-inactive-branches
         run: |
           git fetch --all
           current_date=$(date +%s)
@@ -31,8 +32,11 @@ jobs:
             fi
           done
 
+          # Display inactive branches in the workflow logs
           cat inactive_branches.txt
-          echo "::set-output name=inactive_branches::$(cat inactive_branches.txt | tr '\n' '|')"
+
+          # Set the inactive branches list as output
+          echo "::set-output name=inactive_branches::$(cat inactive_branches.txt)"
 
       - name: Send Email Notification
         if: success()
@@ -50,7 +54,7 @@ jobs:
 
             The following branches have been inactive for over 30 days:
 
-            ${{ steps.get-inactive-branches.outputs.inactive_branches | replace('|', '\n') }}
+            ${{ steps.get-inactive-branches.outputs.inactive_branches }}
 
             Please review and take appropriate action.
 
