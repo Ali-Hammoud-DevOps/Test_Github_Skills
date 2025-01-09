@@ -25,15 +25,16 @@ jobs:
             branch_date=$(echo $branch | awk '{print $2}')
             
             branch_age_in_seconds=$((current_date - branch_date))
+            echo $branch_age_in_seconds
             branch_age_in_days=$((branch_age_in_seconds / (60 * 60 * 24)))
 
             if [ "$branch_age_in_days" -gt 30 ]; then
               echo "$branch_name (inactive for $branch_age_in_days days)" >> inactive_branches.txt
             fi
           done
-          
+
           if [ -s inactive_branches.txt ]; then
-            echo "Inactive branches found:"
+            echo "Inactive branches found: "
             cat inactive_branches.txt
             inactive_branches=$(cat inactive_branches.txt | tr '\n' '|')
             echo "::set-output name=inactive_branches::$inactive_branches"
