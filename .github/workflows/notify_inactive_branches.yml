@@ -20,23 +20,22 @@ jobs:
           current_date=$(date +%s)  # Get current UNIX timestamp (seconds)
           echo "Inactive branches exceeding 30 days:" > inactive_branches.txt
 
-          for branch in $(git for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:unix)' refs/heads/); do
-            branch_name=$(echo $branch | awk '{print $1}')
-            branch_date=$(echo $branch | awk '{print $2}')
+          git for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:unix)' refs/heads/ | while read line; do
+            branch_name=$(echo "$line" | awk '{print $1}')
+            branch_date=$(echo "$line" | awk '{print $2}')
             
             branch_age_in_seconds=$((current_date - branch_date))
-            echo $branch_age_in_seconds
             branch_age_in_days=$((branch_age_in_seconds / (60 * 60 * 24)))
 
             if [ "$branch_age_in_days" -gt 30 ]; then
-              echo "$branch_name (inactive for $branch_age_in_days days)" >> inactive_branches.txt
+              echo "- $branch_name (inactive for $branch_age_in_days days)" >> inactive_branches.txt
             fi
           done
 
           if [ -s inactive_branches.txt ]; then
-            echo "Inactive branches found: "
+            echo "Inactive branches found:"
             cat inactive_branches.txt
-            inactive_branches=$(cat inactive_branches.txt | tr '\n' '|')
+            inactive_branches=$(cat inactive_branches.txt)
             echo "::set-output name=inactive_branches::$inactive_branches"
           else
             echo "No inactive branches found."
@@ -48,7 +47,7 @@ jobs:
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
-          server_port: 587 # Default SMTP port / 465 for SSL
+          server_port: 587
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: Inactive Git Branches Notification
