@@ -27,6 +27,11 @@ jobs:
             branch_age_in_seconds=$((current_date - branch_date))
             branch_age_in_days=$((branch_age_in_seconds / (60 * 60 * 24)))
 
+            # Debugging: Echo values for branch age
+            echo "Branch: $branch_name"
+            echo "Age in seconds: $branch_age_in_seconds"
+            echo "Age in days: $branch_age_in_days"
+
             if [ "$branch_age_in_days" -gt 30 ]; then
               echo "- $branch_name (inactive for $branch_age_in_days days)" >> inactive_branches.txt
             fi
@@ -36,14 +41,13 @@ jobs:
             echo "Inactive branches found:"
             cat inactive_branches.txt
             inactive_branches=$(cat inactive_branches.txt)
-            echo "::set-output name=inactive_branches::$inactive_branches"
+            echo "inactive_branches=$inactive_branches" >> $GITHUB_ENV
           else
             echo "No inactive branches found."
-            echo "::set-output name=inactive_branches::None"
-          fi
+            echo "inactive_branches=None" >> $GITHUB_ENV
 
       - name: Send Email Notification
-        if: steps.get-inactive-branches.outputs.inactive_branches != 'None'
+        if: env.inactive_branches != 'None'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -58,7 +62,7 @@ jobs:
 
             The following branches have been inactive for over 30 days:
 
-            ${{ steps.get-inactive-branches.outputs.inactive_branches }}
+            ${{ env.inactive_branches }}
 
             Please review and take appropriate action.
 
