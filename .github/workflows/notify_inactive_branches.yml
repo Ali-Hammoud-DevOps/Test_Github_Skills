@@ -25,7 +25,6 @@ jobs:
             branch_date=$(echo $branch | awk '{print $2}')
             
             branch_age_in_seconds=$((current_date - branch_date))
-            echo $branch_age_in_seconds
             branch_age_in_days=$((branch_age_in_seconds / (60 * 60 * 24)))
 
             if [ "$branch_age_in_days" -gt 30 ]; then
