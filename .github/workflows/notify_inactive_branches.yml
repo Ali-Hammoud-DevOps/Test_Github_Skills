@@ -23,6 +23,11 @@ jobs:
           git for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:unix)' refs/heads/ | while read line; do
             branch_name=$(echo "$line" | awk '{print $1}')
             branch_date=$(echo "$line" | awk '{print $2}')
+
+            # Skip empty lines
+            if [ -z "$branch_name" ] || [ -z "$branch_date" ]; then
+              continue
+            fi
             
             branch_age_in_seconds=$((current_date - branch_date))
             branch_age_in_days=$((branch_age_in_seconds / (60 * 60 * 24)))
