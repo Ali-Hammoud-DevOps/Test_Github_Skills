@@ -28,6 +28,7 @@ jobs:
             echo "Branch name matches the 'hotfix' pattern."
           else
             echo "Branch name does not match any recognized pattern. Exiting..."
+            git delete branch $branch_name
             exit 1
           fi
         shell: bash
