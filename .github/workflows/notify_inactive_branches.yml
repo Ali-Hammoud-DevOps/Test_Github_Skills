@@ -25,11 +25,9 @@ jobs:
             # Debugging: Output the raw line being processed
             echo "Processing line: $line"
 
-            # Extract branch name and commit date
             branch_name=$(echo "$line" | awk '{print $1}')
             branch_date=$(echo "$line" | awk '{print $2}')
 
-            # Debugging: Echo extracted branch name and date
             echo "Extracted branch name: $branch_name"
             echo "Extracted branch date: $branch_date"
 
@@ -60,10 +58,10 @@ jobs:
             echo "Inactive branches found:"
             cat inactive_branches.txt
             inactive_branches=$(cat inactive_branches.txt | tr '\n' '|')
-            echo "::set-output name=inactive_branches::$inactive_branches"
+            echo "inactive_branches=$inactive_branches" >> $GITHUB_ENV
           else
             echo "No inactive branches found."
-            echo "::set-output name=inactive_branches::None"
+            echo "inactive_branches=None" >> $GITHUB_ENV
           fi
 
       - name: Send Email Notification
