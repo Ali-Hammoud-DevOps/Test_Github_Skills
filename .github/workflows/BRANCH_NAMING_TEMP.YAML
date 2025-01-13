@@ -1,18 +1,21 @@
-name: Check Pull Request
-on: pull_request
+name: Check Push Request
+
+on:
+  push:
+    branches:
+      - '**'  # Trigger on push to any branch
+    paths:
+      - '**'  # Optional: specify paths to restrict the trigger to specific files/folders
 
 jobs:
-  check_pr:
+  check_push:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check if PR target branch is ok
+      - name: Check if pushed branch name is ok
         run: |
-          branch_name=${GITHUB_HEAD_REF}
-          echo "pr branch name: $branch_name"
-          
-          target_branch=${GITHUB_BASE_REF}
-          echo "target branch: $target_branch"
+          branch_name=${GITHUB_REF#refs/heads/}  # Get the branch name from GITHUB_REF
+          echo "Pushed branch name: $branch_name"
           
           # Define regex patterns for the new naming conventions
           feature_regex="^feature/[a-z0-9\-]+$"
@@ -23,28 +26,12 @@ jobs:
           # Check if the branch name matches any of the above patterns
           if [[ "$branch_name" =~ $feature_regex ]]; then
             echo "Branch name matches the 'feature' pattern."
-            if [[ "$target_branch" != "develop" && "$target_branch" != "main" ]]; then
-              echo "but doesn't match target branch"
-              exit 1
-            fi
           elif [[ "$branch_name" =~ $bugfix_regex ]]; then
             echo "Branch name matches the 'bugfix' pattern."
-            if [[ "$target_branch" != "develop" && "$target_branch" != "main" ]]; then
-              echo "but doesn't match target branch"
-              exit 1
-            fi
           elif [[ "$branch_name" =~ $release_regex ]]; then
             echo "Branch name matches the 'release' pattern."
-            if [[ "$target_branch" != "main" ]]; then
-              echo "but doesn't match target branch"
-              exit 1
-            fi
           elif [[ "$branch_name" =~ $hotfix_regex ]]; then
             echo "Branch name matches the 'hotfix' pattern."
-            if [[ "$target_branch" != "main" ]]; then
-              echo "but doesn't match target branch"
-              exit 1
-            fi
           else
             echo "Branch name does not match any recognized pattern. Exiting..."
             exit 1
