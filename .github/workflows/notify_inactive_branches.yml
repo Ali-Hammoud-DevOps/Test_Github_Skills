@@ -51,7 +51,7 @@ jobs:
             if [ "$branch_age_in_days" -gt 30 ]; then
               echo "- $branch_name (inactive for $branch_age_in_days days)" >> inactive_branches.txt
             fi
-          done
+          done  # Close the while loop
 
           # Check if the output file has content and set the environment variable
           if [ -s inactive_branches.txt ]; then
@@ -62,6 +62,7 @@ jobs:
           else
             echo "No inactive branches found."
             echo "inactive_branches=None" >> $GITHUB_ENV
+          fi  # Close the if block
 
       - name: Send Email Notification
         if: env.inactive_branches != 'None'
