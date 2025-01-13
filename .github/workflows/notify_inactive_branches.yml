@@ -16,11 +16,20 @@ jobs:
       - name: Get Inactive Branches
         id: get-inactive-branches
         run: |
+          #!/usr/bin/bash
+
+          # Fetch all branches from the remote
           git fetch --all
-          current_date=$(date +%s)  # Get current UNIX timestamp (seconds)
+
+          # Get the current UNIX timestamp (seconds)
+          current_date=$(date +%s)
+
+          # Initialize the output file
           echo "Inactive branches exceeding 30 days:" > inactive_branches.txt
 
+          # List branches sorted by last commit date
           git for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:unix)' refs/heads/ | while read line; do
+            # Extract branch name and commit date
             branch_name=$(echo "$line" | awk '{print $1}')
             branch_date=$(echo "$line" | awk '{print $2}')
 
@@ -28,20 +37,23 @@ jobs:
             if [ -z "$branch_name" ] || [ -z "$branch_date" ]; then
               continue
             fi
-            
+
+            # Calculate branch age
             branch_age_in_seconds=$((current_date - branch_date))
             branch_age_in_days=$((branch_age_in_seconds / (60 * 60 * 24)))
 
-            # Debugging: Echo values for branch age
+            # Debugging: Echo branch information
             echo "Branch: $branch_name"
             echo "Age in seconds: $branch_age_in_seconds"
             echo "Age in days: $branch_age_in_days"
 
+            # Check if the branch is older than 30 days
             if [ "$branch_age_in_days" -gt 30 ]; then
               echo "- $branch_name (inactive for $branch_age_in_days days)" >> inactive_branches.txt
             fi
           done
 
+          # Check if the output file has content and set the environment variable
           if [ -s inactive_branches.txt ]; then
             echo "Inactive branches found:"
             cat inactive_branches.txt
