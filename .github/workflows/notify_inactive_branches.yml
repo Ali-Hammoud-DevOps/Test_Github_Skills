@@ -20,27 +20,40 @@ jobs:
           current_date=$(date +%s)  # Get current UNIX timestamp (seconds)
           echo "Inactive branches exceeding 30 days:" > inactive_branches.txt
 
-          # Loop through all branches and calculate their age
-          for branch in $(git for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:unix)' refs/heads/); do
-            branch_name=$(echo $branch | awk '{print $1}')
-            branch_date=$(echo $branch | awk '{print $2}')
-            
-            # Calculate the age in seconds and convert to days
+          # Fetch branch names and last commit dates
+          git for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:unix)' refs/heads/ | while IFS= read -r line; do
+            # Debugging: Output the raw line being processed
+            echo "Processing line: $line"
+
+            # Extract branch name and commit date
+            branch_name=$(echo "$line" | awk '{print $1}')
+            branch_date=$(echo "$line" | awk '{print $2}')
+
+            # Debugging: Echo extracted branch name and date
+            echo "Extracted branch name: $branch_name"
+            echo "Extracted branch date: $branch_date"
+
+            # Skip empty or invalid lines
+            if [ -z "$branch_name" ] || [ -z "$branch_date" ] || ! [[ "$branch_date" =~ ^[0-9]+$ ]]; then
+              echo "Skipping invalid or empty line: $line"
+              continue
+            fi
+
+            # Calculate branch age
             branch_age_in_seconds=$((current_date - branch_date))
             branch_age_in_days=$((branch_age_in_seconds / (60 * 60 * 24)))
 
-            # Debugging: Echo branch information
+            # Debugging: Echo branch age
             echo "Branch: $branch_name"
-            echo "Age in seconds: $branch_age_in_seconds"
             echo "Age in days: $branch_age_in_days"
-            
-            # If branch age is greater than 30 days, add to inactive branches list
+
+            # Add inactive branches to the list
             if [ "$branch_age_in_days" -gt 30 ]; then
-              echo "$branch_name (inactive for $branch_age_in_days days)" >> inactive_branches.txt
+              echo "- $branch_name (inactive for $branch_age_in_days days)" >> inactive_branches.txt
             fi
           done
 
-          # Check if there are any inactive branches, and prepare output accordingly
+          # Check if the output file has content
           if [ -s inactive_branches.txt ]; then
             echo "Inactive branches found:"
             cat inactive_branches.txt
