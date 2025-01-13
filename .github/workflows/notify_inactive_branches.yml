@@ -41,10 +41,12 @@ jobs:
 
             # Calculate branch age
             branch_age_in_seconds=$((current_date - branch_date))
+            branch_age_in_hours=$((branch_age_in_seconds / (60 * 60)))
             branch_age_in_days=$((branch_age_in_seconds / (60 * 60 * 24)))
 
             # Debugging: Echo branch age
             echo "Branch: $branch_name"
+            echo "Age in hours: $branch_age_in_hours"
             echo "Age in days: $branch_age_in_days"
 
             # Add inactive branches to the list
