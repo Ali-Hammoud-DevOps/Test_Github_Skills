@@ -31,9 +31,15 @@ jobs:
             echo "Branch name matches the 'hotfix' pattern."
           else
             echo "Branch name does not match any recognized pattern. Exiting..."
-            git checkout remotes/origin/main
-            git branch -D "$branch_name"
-            git push origin --delete "$branch_name"
             exit 1
           fi
         shell: bash
+
+      - name: Delete Branch if Invalid Naming Convention
+        if: failure()
+        uses: dawidd6/action-delete-branch@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branches: ${{ github.ref }}
+
+
