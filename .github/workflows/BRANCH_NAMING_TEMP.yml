@@ -15,6 +15,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Check if pushed branch name is ok
+        id: check_branch_name
         run: |
           branch_name=${GITHUB_REF#refs/heads/}  # Get the branch name from GITHUB_REF
           echo "Pushed branch name: $branch_name"
@@ -38,11 +39,13 @@ jobs:
             echo "Branch name does not match any recognized pattern. Exiting..."
             exit 1
           fi
-        shell: bash
+
+          # Pass branch name as an output for subsequent steps
+          echo "branch_name=$branch_name" >> $GITHUB_ENV
 
       - name: Delete Branch if Invalid Naming Convention
-        if: failure()
+        if: failure()  # Only run if the previous step fails (i.e., invalid branch naming)
         uses: dawidd6/action-delete-branch@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branches: ${GITHUB_REF#refs/heads/}
+          branches: ${{ env.branch_name }}  # Use the branch name from the environment variable
