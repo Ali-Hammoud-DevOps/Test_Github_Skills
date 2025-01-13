@@ -6,6 +6,9 @@ jobs:
   check_create_branch:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        
       - name: Check if pushed branch name is ok
         run: |
           branch_name=${GITHUB_REF#refs/heads/}  # Get the branch name from GITHUB_REF
