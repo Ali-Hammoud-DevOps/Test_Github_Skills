@@ -48,4 +48,4 @@ jobs:
         uses: dawidd6/action-delete-branch@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branches: ${{ steps.check_branch_name.outputs.branch_name }} # Get the branch name from the previous step
+          branches: ${{ steps.check_branch_name.outputs.branch_name }}
