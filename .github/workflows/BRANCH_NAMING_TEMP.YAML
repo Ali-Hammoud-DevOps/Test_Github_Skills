@@ -1,16 +1,13 @@
 name: Check Push Request
 
 on:
-  push:
+  create:
     branches:
-      - '**'  # Trigger on push to any branch
-    paths:
-      - '**'  # Optional: specify paths to restrict the trigger to specific files/folders
+      - '*'
 
 jobs:
-  check_push:
+  check_create_branch:
     runs-on: ubuntu-latest
-
     steps:
       - name: Check if pushed branch name is ok
         run: |
