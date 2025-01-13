@@ -43,9 +43,13 @@ jobs:
           # Export the branch name to be used in the next step
           echo "BRANCH_NAME=$branch_name" >> $GITHUB_ENV
 
+      - name: Debug Branch Deletion
+        if: failure()
+        run: echo "Branch to delete: refs/heads/${{ env.BRANCH_NAME }}"
+
       - name: Delete Branch if Invalid Naming Convention
         if: failure()  # Only run if the previous step fails (i.e., invalid branch naming)
         uses: dawidd6/action-delete-branch@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branches: ${{ env.BRANCH_NAME }} # Get the branch name from the previous step
+          branches: refs/heads/${{ env.BRANCH_NAME }}
