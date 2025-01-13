@@ -28,6 +28,11 @@ jobs:
             # Calculate the age in seconds and convert to days
             branch_age_in_seconds=$((current_date - branch_date))
             branch_age_in_days=$((branch_age_in_seconds / (60 * 60 * 24)))
+
+            # Debugging: Echo branch information
+            echo "Branch: $branch_name"
+            echo "Age in seconds: $branch_age_in_seconds"
+            echo "Age in days: $branch_age_in_days"
             
             # If branch age is greater than 30 days, add to inactive branches list
             if [ "$branch_age_in_days" -gt 30 ]; then
