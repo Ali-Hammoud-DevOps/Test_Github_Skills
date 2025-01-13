@@ -2,7 +2,7 @@ name: Notify for Inactive Branches
 
 on:
   schedule:
-    - cron: "0 8 1 * *"  # At 8:00 AM at the start of every month
+    - cron: "0 8 1 * *"  # At 8:00 AM on the first day of every month
   workflow_dispatch:  # Allow manual triggering of the action
 
 jobs:
@@ -22,7 +22,6 @@ jobs:
 
           # Fetch branch names and last commit dates
           git for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:unix)' refs/heads/ | while IFS= read -r line; do
-            # Debugging: Output the raw line being processed
             echo "Processing line: $line"
 
             branch_name=$(echo "$line" | awk '{print $1}')
@@ -39,14 +38,9 @@ jobs:
 
             # Calculate branch age
             branch_age_in_seconds=$((current_date - branch_date))
-            branch_age_in_minutes=$((branch_age_in_minutes / (60)))
-            branch_age_in_hours=$((branch_age_in_seconds / (60 * 60)))
             branch_age_in_days=$((branch_age_in_seconds / (60 * 60 * 24)))
 
-            # Debugging: Echo branch age
             echo "Branch: $branch_name"
-            echo "Age in minutes: $branch_age_in_hours"
-            echo "Age in hours: $branch_age_in_hours"
             echo "Age in days: $branch_age_in_days"
 
             # Add inactive branches to the list
@@ -67,11 +61,11 @@ jobs:
           fi
 
       - name: Send Email Notification
-        if: steps.get-inactive-branches.outputs.inactive_branches != 'None'
+        if: env.inactive_branches != 'None'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
-          server_port: 587 # Default SMTP port / 465 for SSL
+          server_port: 587
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: Inactive Git Branches Notification
@@ -82,7 +76,7 @@ jobs:
 
             The following branches have been inactive for over 30 days:
 
-            ${{ steps.get-inactive-branches.outputs.inactive_branches }}
+            ${{ env.inactive_branches }}
 
             Please review and take appropriate action.
 
