@@ -11,6 +11,7 @@ jobs:
         
       - name: Check if pushed branch name is ok
         run: |
+          echo git fetch --all
           branch_name=${GITHUB_REF#refs/heads/}  # Get the branch name from GITHUB_REF
           echo "Pushed branch name: $branch_name"
           
