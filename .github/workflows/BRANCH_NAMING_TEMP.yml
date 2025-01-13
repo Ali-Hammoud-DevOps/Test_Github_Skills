@@ -13,18 +13,18 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-        
+
       - name: Check if pushed branch name is ok
         run: |
           branch_name=${GITHUB_REF#refs/heads/}  # Get the branch name from GITHUB_REF
           echo "Pushed branch name: $branch_name"
-          
+
           # Define regex patterns for the new naming conventions
           feature_regex="^feature/[a-z0-9\-]+$"
           bugfix_regex="^bugfix/[a-z0-9\-]+$"
           release_regex="^release/[v0-9]+\.[0-9]+\.[0-9]+$"
           hotfix_regex="^hotfix/[a-z0-9\-]+$"
-          
+
           # Check if the branch name matches any of the above patterns
           if [[ "$branch_name" =~ $feature_regex ]]; then
             echo "Branch name matches the 'feature' pattern."
@@ -45,6 +45,4 @@ jobs:
         uses: dawidd6/action-delete-branch@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branches: ${{ github.ref }}
-
-
+          branches: ${GITHUB_REF#refs/heads/}
