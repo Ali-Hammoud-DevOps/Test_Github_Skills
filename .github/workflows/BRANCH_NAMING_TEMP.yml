@@ -11,7 +11,6 @@ jobs:
         
       - name: Check if pushed branch name is ok
         run: |
-          echo ${git branch --all}
           branch_name=${GITHUB_REF#refs/heads/}  # Get the branch name from GITHUB_REF
           echo "Pushed branch name: $branch_name"
           
@@ -32,7 +31,7 @@ jobs:
             echo "Branch name matches the 'hotfix' pattern."
           else
             echo "Branch name does not match any recognized pattern. Exiting..."
-            git checkout main
+            git checkout remotes/origin/main
             git branch -D "$branch_name"
             git push origin --delete "$branch_name"
             exit 1
