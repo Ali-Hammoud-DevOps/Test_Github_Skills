@@ -1,4 +1,4 @@
-name: Check Push Request
+name: Check Create Branch Request
 
 on:
   create:
