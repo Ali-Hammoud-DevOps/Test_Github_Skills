@@ -47,18 +47,11 @@ jobs:
           done
 
           if [ -s inactive_branches.txt ]; then
-            inactive_branches=$(cat inactive_branches.txt | tr '\n' '|')
+            inactive_branches=$(cat inactive_branches.txt | tr '\n' '|' | sed 's/origin\///g')
             echo "inactive_branches=$inactive_branches" >> $GITHUB_ENV
           else
             echo "inactive_branches=None" >> $GITHUB_ENV
           fi
-
-      - name: Fix Email structure
-        if: env.inactive_branches != 'None'
-        run: |
-          email_body=$(echo "${{ env.inactive_branches }}" | tr '|' '\n')
-          email_body_encoded=$(echo "$email_body" | sed ':a;N;$!ba;s/\n/%0A/g')
-          echo "::set-output name=email_body::$email_body_encoded"
 
       - name: Send Email Notification
         if: env.inactive_branches != 'None'
@@ -76,7 +69,7 @@ jobs:
 
             The following branches have been inactive for over 30 days:
 
-              ${{ steps.fix-email.outputs.email_body }}
+              ${{ env.inactive_branches }}
 
             Please review and take appropriate action.
 
