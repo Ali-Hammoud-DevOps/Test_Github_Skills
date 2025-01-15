@@ -58,7 +58,7 @@ jobs:
           if [ -s inactive_branches.txt ]; then
             echo "Inactive branches found:"
             cat inactive_branches.txt
-            inactive_branches=$(cat inactive_branches.txt | tr '\n' '|')
+            inactive_branches=$(cat inactive_branches.txt | tr '\n' '\n')
             echo "inactive_branches=$inactive_branches" >> $GITHUB_ENV
           else
             echo "No inactive branches found."
