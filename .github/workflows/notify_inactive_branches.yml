@@ -120,7 +120,6 @@ jobs:
         if: env.inactive_branches != 'None'
         run: |
           email_body=$(echo "${{ env.inactive_branches }}" | tr '|' '\n')
-          echo "EMAIL_BODY=$email_body" >> $GITHUB_ENV
 
       - name: Send Email Notification
         if: env.inactive_branches != 'None'
