@@ -65,8 +65,13 @@ jobs:
             echo "inactive_branches=None" >> $GITHUB_ENV
           fi
 
-      - name: Send Email Notification
+      - name: Correct the format of the inactive branches
         if: env.inactive_branches != 'None'
+        run: |
+          decoded_body=$(echo -e "${{ env.inactive_branches }}")
+          echo "email_body=$decoded_body" >> $GITHUB_ENV
+
+      - name: Send Email Notification
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -81,7 +86,7 @@ jobs:
 
             The following branches have been inactive for over 30 days:
 
-            ${{ env.inactive_branches }}
+            ${{ env.email_body }}
 
             Please review and take appropriate action.
 
