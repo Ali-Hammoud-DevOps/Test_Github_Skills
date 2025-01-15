@@ -69,7 +69,7 @@ jobs:
 
             The following branches have been inactive for over 30 days:
 
-              ${{ env.inactive_branches }}
+            ${{ env.inactive_branches }}
 
             Please review and take appropriate action.
 
