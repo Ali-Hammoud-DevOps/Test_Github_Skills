@@ -1,6 +1,6 @@
 # Contributing Guidelines
 
-Welcome to the [idurar-erp-crm](<[idurar-erp-crm](https://github.com/idurar/idurar-erp-crm)>) repository! We're excited that you're interested in contributing. Please take a moment to review this document to ensure a smooth collaboration process.
+Welcome to the [xxxxx - xxxxx repo](<[xxxxxxx](https://github.com/Ali-Hammoud-DevOps/Test_Github_Skills)>) repository! We're excited that you're interested in contributing. Please take a moment to review this document to ensure a smooth collaboration process.
 
 ## How to Contribute
 
