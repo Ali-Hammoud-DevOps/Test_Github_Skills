@@ -1,6 +1,6 @@
 # Contributing Guidelines
 
-Welcome to the [xxxxx repo](<[xxxxxxx](https://github.com/Ali-Hammoud-DevOps/Test_Github_Skills)>) repository! We're excited that you're interested in contributing. Please take a moment to review this document to ensure a smooth collaboration process.
+Welcome to the [xxxxx](<[xxxxxxx](https://github.com/Ali-Hammoud-DevOps/Test_Github_Skills)>) repository! We're excited that you're interested in contributing. Please take a moment to review this document to ensure a smooth collaboration process.
 
 ## How to Contribute
 
