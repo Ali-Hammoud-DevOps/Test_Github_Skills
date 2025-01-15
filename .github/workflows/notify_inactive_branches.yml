@@ -28,9 +28,6 @@ jobs:
             branch_name=$(echo "$line" | awk '{print $1}')
             branch_date=$(echo "$line" | awk '{print $2}')
 
-            # Remove 'origin/' prefix from branch names
-            branch_name=${branch_name#origin/}
-
             echo "Extracted branch name: $branch_name"
             echo "Extracted branch date: $branch_date"
 
@@ -42,9 +39,9 @@ jobs:
 
             # Calculate branch age
             branch_age_in_seconds=$((current_date - branch_date))
-            branch_age_in_minutes=$((branch_age_in_seconds / 60))
-            branch_age_in_hours=$((branch_age_in_seconds / 3600))
-            branch_age_in_days=$((branch_age_in_seconds / 86400))
+            branch_age_in_minutes=$((branch_age_in_seconds / (60)))
+            branch_age_in_hours=$((branch_age_in_seconds / (60 * 60)))
+            branch_age_in_days=$((branch_age_in_seconds / (60 * 60 * 24)))
 
             echo "Branch: $branch_name"
             echo "Age in minutes: $branch_age_in_minutes"
@@ -52,21 +49,20 @@ jobs:
             echo "Age in days: $branch_age_in_days"
 
             # Add inactive branches to the list
-            if [ "$branch_age_in_days" -gt 30 ]; then
+            if [ "$branch_age_in_days" -gt 1 ]; then
               echo "- $branch_name (inactive for $branch_age_in_days days)" >> inactive_branches.txt
             fi
           done
 
-          # Check if the output file has content
           if [ -s inactive_branches.txt ]; then
             echo "Inactive branches found:"
             cat inactive_branches.txt
-            # Replace newlines with a delimiter (| or ;), and escape any quotes
-            inactive_branches=$(cat inactive_branches.txt | tr '\n' '|' | sed 's/"/\\"/g')
+            inactive_branches=$(cat inactive_branches.txt | tr '\n' '|')
             echo "inactive_branches=$inactive_branches" >> $GITHUB_ENV
           else
             echo "No inactive branches found."
             echo "inactive_branches=None" >> $GITHUB_ENV
+          fi
 
       - name: Send Email Notification
         if: env.inactive_branches != 'None'
