@@ -54,13 +54,13 @@ jobs:
               clean_branch_name=$(echo "$branch_name" | sed 's|^origin/||')
               echo "- $clean_branch_name (inactive for $branch_age_in_days days)" >> inactive_branches.txt
             fi
-          done
+          done  # Close the while loop here
 
           # Check if the output file has content
           if [ -s inactive_branches.txt ]; then
             echo "Inactive branches found:"
             cat inactive_branches.txt
-            inactive_branches=$(cat inactive_branches.txt | tr '\n' '\n')
+            inactive_branches=$(cat inactive_branches.txt | tr '\n' '\n')  # Ensure new lines are respected
             echo "inactive_branches=$inactive_branches" >> $GITHUB_ENV
           else
             echo "No inactive branches found."
