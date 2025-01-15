@@ -57,7 +57,8 @@ jobs:
         if: env.inactive_branches != 'None'
         run: |
           email_body=$(echo "${{ env.inactive_branches }}" | tr '|' '\n')
-          echo "::set-output name=email_body::$email_body" # Set the email body as an output
+          email_body_encoded=$(echo "$email_body" | sed ':a;N;$!ba;s/\n/%0A/g')
+          echo "::set-output name=email_body::$email_body_encoded"
 
       - name: Send Email Notification
         if: env.inactive_branches != 'None'
