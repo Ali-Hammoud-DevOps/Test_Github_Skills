@@ -1,6 +1,6 @@
 # Contributing Guidelines
 
-Welcome to the [xxxxx - xxxxx repo](<[xxxxxxx](https://github.com/Ali-Hammoud-DevOps/Test_Github_Skills)>) repository! We're excited that you're interested in contributing. Please take a moment to review this document to ensure a smooth collaboration process.
+Welcome to the [xxxxx repo](<[xxxxxxx](https://github.com/Ali-Hammoud-DevOps/Test_Github_Skills)>) repository! We're excited that you're interested in contributing. Please take a moment to review this document to ensure a smooth collaboration process.
 
 ## How to Contribute
 
@@ -8,38 +8,45 @@ Welcome to the [xxxxx - xxxxx repo](<[xxxxxxx](https://github.com/Ali-Hammoud-De
 
 If you find a bug or have a suggestion for an enhancement :
 
-- please make sure it was not asked before here [issues](https://github.com/idurar/idurar-erp-crm/issues).
-- make sure it is not work in progress here [pull requests](https://github.com/idurar/idurar-erp-crm/pulls).
-- you can then [create an issue](https://github.com/idurar/idurar-erp-crm/issues/new/choose) with the following information:
+- please make sure it was not asked before here [issues](https://github.com/Ali-Hammoud-DevOps/Test_Github_Skills/issues).
+- make sure it is not work in progress here [pull requests](https://github.com/Ali-Hammoud-DevOps/Test_Github_Skills/pulls).
+- make sure there is a Jira task of it here (Link)
+- you can then [create an issue](https://github.com/Ali-Hammoud-DevOps/Test_Github_Skills/issues/new/choose) with the following information:
   - a short but descriptive title.
   - a detailed description of the issue or suggestion (if it is a bug include the steps to reproduce it).
+- Ensure that the details provided align with the same criteria used in Jira for consistency and completeness.
 
 ### working on issues
 
 - comment on issues you want to work on and we will assign you to it.
-- we do accept pull requests even if you are not assigned to an issue but we prefer you to comment on the issue first.
+- SE will be assigned to specific issue to tackle.
 
 ### Submitting Pull Requests
 
-1. Fork the repository and create your own branch from `dev` branch.
+1. Fork the repository and create your own branch from `release` branch.
 2. follow this format for naming branches:
-   - `features/new-profile-page`
-   - `issues/fix-authentication-issue`
+   - `9.2.0/Features/new-profile-page`
+   - `9.2.0/Fix/login-validation-bug`
 3. Make sure your code follows our [Coding Guidelines](#coding-guidelines).
-4. Commit your changes using clear and descriptive commit messages .
-5. Push your changes to your forked repository.
-6. Submit a pull request to the `dev` branch of this repository. Please include a detailed description of your changes.
+4. Make sure that the commit name follows the same task/issue key found in Jira.
+5. Commit only once for every task found in Jira.
+6. Commit your changes using clear and descriptive commit messages .
+7. Push your changes to your forked repository.
+8. Submit a pull request to the `release` branch of this repository. Please include a detailed description of your changes.
 
 We'll review your pull request as soon as possible. Feedback and suggestions are always welcome.
 
 ### Commit Guidelines
 
-Commits should be as small as possible, while ensuring that each commit is
-correct independently (i.e., each commit should compile and pass tests).
-Please follow this commit format for your commit messages:
-
-- `feat: add new profile page`
-- `fix: resolve authentication issue`
+1. reference the corresponding Jira task or issue key at the beginning of the commit message.
+2. each task or issue is addressed in a single commit, with a clear and traceable commit message.
+3. **Use a Consistent Format**:
+   - Start with the **key** followed by a colon (`:`).
+   - Include a **type descriptor** (e.g., Feature, Fix, Enhancement).
+   - Provide a **brief description** of the change.
+   - ex: For a feature:"Key: Feature Name-Task Name”: PROJ-123: user login: Added user login functionality
+         For a bug fix: "Key: Fix - Task Name”: PROJ-456: Fix: Fixed crash on login button click
+         For a UI/UX enhancement: Key: enhancement - task Name”: PROJ-789: enhancement - Updated styles for login button
 
 ### Coding Guidelines
 
@@ -51,6 +58,6 @@ Please follow this commit format for your commit messages:
 
 ### Questions
 
-If you have any questions, feel free to reach out by creating an issue.
+If you have any questions, feel free to reach out by contacting xxxx
 
-Thank you for contributing to [idurar-erp-crm](https://github.com/idurar/idurar-erp-crm) dont forget to give us a :star: !
+Thank you for contributing to [xxxx repo](https://github.com/Ali-Hammoud-DevOps/Test_Github_Skills)
