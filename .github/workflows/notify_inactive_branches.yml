@@ -57,6 +57,7 @@ jobs:
         if: env.inactive_branches != 'None'
         run: |
           email_body=$(echo "${{ env.inactive_branches }}" | tr '|' '\n')
+          echo "::set-output name=email_body::$email_body" # Set the email body as an output
 
       - name: Send Email Notification
         if: env.inactive_branches != 'None'
@@ -74,7 +75,7 @@ jobs:
 
             The following branches have been inactive for over 30 days:
 
-            ${{ env.inactive_branches }}
+              ${{ steps.fix-email.outputs.email_body }}
 
             Please review and take appropriate action.
 
