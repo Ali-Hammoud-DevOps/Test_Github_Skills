@@ -53,6 +53,12 @@ jobs:
             echo "inactive_branches=None" >> $GITHUB_ENV
           fi
 
+      - name: Fix Email structure
+        if: env.inactive_branches != 'None'
+        run: |
+          email_body=$(echo "${{ env.inactive_branches }}" | tr '|' '\n')
+          echo "email_body=$email_body" >> $GITHUB_ENV 
+
       - name: Send Email Notification
         if: env.inactive_branches != 'None'
         uses: dawidd6/action-send-mail@v3
