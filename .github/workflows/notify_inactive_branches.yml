@@ -19,7 +19,7 @@ jobs:
           git fetch --prune --all
           git checkout main
           current_date=$(date +%s)  # Get current UNIX timestamp (seconds)
-          echo "Inactive branches exceeding 30 days: \n" > inactive_branches.txt
+          echo -e "Inactive branches exceeding 30 days: \n" > inactive_branches.txt
 
           # Fetch branch names and last commit dates
           git for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:unix)' refs/remotes/origin/ | while IFS= read -r line; do
