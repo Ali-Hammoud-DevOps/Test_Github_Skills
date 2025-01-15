@@ -16,7 +16,8 @@ jobs:
       - name: Get Inactive Branches
         id: get-inactive-branches
         run: |
-          git fetch --all
+          git fetch --prune --all
+          git checkout main
           current_date=$(date +%s)  # Get current UNIX timestamp (seconds)
           echo "Inactive branches exceeding 30 days:" > inactive_branches.txt
 
