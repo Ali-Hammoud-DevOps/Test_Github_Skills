@@ -48,23 +48,22 @@ jobs:
             echo "Age in hours: $branch_age_in_hours"
             echo "Age in days: $branch_age_in_days"
 
-            # Add inactive branches to the list (Only if older than 1 day)
+            # Add inactive branches to the list
             if [ "$branch_age_in_days" -gt 1 ]; then
-              # Remove the 'origin/' part from branch names and add to the list
-              clean_branch_name=$(echo "$branch_name" | sed 's|^origin/||')
-              echo "- $clean_branch_name (inactive for $branch_age_in_days days)" >> inactive_branches.txt
+              echo "- $branch_name (inactive for $branch_age_in_days days)" >> inactive_branches.txt
             fi
-          done  # Close the while loop here
+          done
 
           # Check if the output file has content
           if [ -s inactive_branches.txt ]; then
             echo "Inactive branches found:"
             cat inactive_branches.txt
-            inactive_branches=$(cat inactive_branches.txt | tr '\n' '\n')  # Ensure new lines are respected
+            inactive_branches=$(cat inactive_branches.txt | tr '\n' '\n')
             echo "inactive_branches=$inactive_branches" >> $GITHUB_ENV
           else
             echo "No inactive branches found."
             echo "inactive_branches=None" >> $GITHUB_ENV
+          fi
 
       - name: Send Email Notification
         if: env.inactive_branches != 'None'
