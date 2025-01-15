@@ -22,7 +22,7 @@ jobs:
           echo "Inactive branches exceeding 30 days:" > inactive_branches.txt
 
           # Fetch branch names and last commit dates
-          git for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:unix)' refs/heads/ | while IFS= read -r line; do
+          git for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:unix)' refs/remotes/origin/ | while IFS= read -r line; do
             echo "Processing line: $line"
 
             branch_name=$(echo "$line" | awk '{print $1}')
