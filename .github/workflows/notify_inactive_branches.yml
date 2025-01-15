@@ -64,6 +64,64 @@ jobs:
             echo "inactive_branches=None" >> $GITHUB_ENV
           fi
 
+
+          - name: Get Inactive Branches
+          id: get-inactive-branches
+          run: |
+            git fetch --prune --all
+            git checkout main
+            current_date=$(date +%s)  # Get current UNIX timestamp (seconds)
+            echo "Inactive branches exceeding 30 days:" > inactive_branches.txt
+  
+            # Fetch branch names and last commit dates
+            git for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:unix)' refs/remotes/origin/ | while IFS= read -r line; do
+              echo "Processing line: $line"
+  
+              branch_name=$(echo "$line" | awk '{print $1}')
+              branch_date=$(echo "$line" | awk '{print $2}')
+  
+              echo "Extracted branch name: $branch_name"
+              echo "Extracted branch date: $branch_date"
+  
+              # Skip empty or invalid lines
+              if [ -z "$branch_name" ] || [ -z "$branch_date" ] || ! [[ "$branch_date" =~ ^[0-9]+$ ]]; then
+                echo "Skipping invalid or empty line: $line"
+                continue
+              fi
+  
+              # Calculate branch age
+              branch_age_in_seconds=$((current_date - branch_date))
+              branch_age_in_minutes=$((branch_age_in_seconds / (60)))
+              branch_age_in_hours=$((branch_age_in_seconds / (60 * 60)))
+              branch_age_in_days=$((branch_age_in_seconds / (60 * 60 * 24)))
+  
+              echo "Branch: $branch_name"
+              echo "Age in minutes: $branch_age_in_minutes"
+              echo "Age in hours: $branch_age_in_hours"
+              echo "Age in days: $branch_age_in_days"
+  
+              # Add inactive branches to the list
+              if [ "$branch_age_in_days" -gt 1 ]; then
+                echo "- $branch_name (inactive for $branch_age_in_days days)" >> inactive_branches.txt
+              fi
+            done
+  
+            if [ -s inactive_branches.txt ]; then
+              echo "Inactive branches found:"
+              cat inactive_branches.txt
+              inactive_branches=$(cat inactive_branches.txt | tr '\n' '|')
+              echo "inactive_branches=$inactive_branches" >> $GITHUB_ENV
+            else
+              echo "No inactive branches found."
+              echo "inactive_branches=None" >> $GITHUB_ENV
+            fi  
+
+      - name: Prepare Email Body
+        if: env.inactive_branches != 'None'
+        run: |
+          email_body=$(echo "${{ env.inactive_branches }}" | tr '|' '\n')
+          echo "EMAIL_BODY=$email_body" >> $GITHUB_ENV
+
       - name: Send Email Notification
         if: env.inactive_branches != 'None'
         uses: dawidd6/action-send-mail@v3
@@ -80,7 +138,7 @@ jobs:
 
             The following branches have been inactive for over 30 days:
 
-            echo ${{ env.inactive_branches}} | tr '|' '\n'
+            ${{ env.inactive_branches }}
 
             Please review and take appropriate action.
 
