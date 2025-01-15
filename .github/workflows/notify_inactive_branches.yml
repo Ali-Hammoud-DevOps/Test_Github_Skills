@@ -19,7 +19,7 @@ jobs:
           git fetch --prune --all
           git checkout main
           current_date=$(date +%s)  # Get current UNIX timestamp (seconds)
-          echo -e "Inactive branches exceeding 30 days: \n" > inactive_branches.txt
+          echo "Inactive branches exceeding 30 days: " > inactive_branches.txt
 
           # Fetch branch names and last commit dates
           git for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:unix)' refs/remotes/origin/ | while IFS= read -r line; do
@@ -58,8 +58,7 @@ jobs:
           if [ -s inactive_branches.txt ]; then
             echo "Inactive branches found:"
             cat inactive_branches.txt
-            # Replace newlines with a delimiter (| or ;), and escape any quotes
-            inactive_branches=$(cat inactive_branches.txt | tr '\n' '|' | sed 's/"/\\"/g')
+            inactive_branches=$(cat inactive_branches.txt | tr '\n' '\n' '|' | sed 's/"/\\"/g')
             echo "inactive_branches=$inactive_branches" >> $GITHUB_ENV
           else
             echo "No inactive branches found."
