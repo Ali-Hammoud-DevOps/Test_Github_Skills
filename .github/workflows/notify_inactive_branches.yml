@@ -57,7 +57,7 @@ jobs:
           fi
 
       - name: Send Email Notification
-        if: ${{ github.ref }} != 'None'
+        if: env.inactive_branches != 'None'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -72,7 +72,7 @@ jobs:
 
             The following branches have been inactive for over 30 days:
 
-            ${{ github.ref }}
+            ${{ env.inactive_branches }}
 
             Please review and take appropriate action.
 
