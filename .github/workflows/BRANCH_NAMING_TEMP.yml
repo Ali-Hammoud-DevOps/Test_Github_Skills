@@ -11,9 +11,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set default branch name
-        run: echo "branch_name=${{ github.ref_name || 'default-branch-name' }}" >> $GITHUB_ENV
-
       - name: Check branch name is ok
         id: check_branch_name
         run: |
