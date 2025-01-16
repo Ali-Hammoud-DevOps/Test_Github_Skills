@@ -40,6 +40,10 @@ jobs:
             branch_age_in_hours=$((branch_age_in_seconds / (60 * 60)))
             branch_age_in_days=$((branch_age_in_seconds / (60 * 60 * 24)))
 
+            echo "Branch: $branch_name"
+            echo "Age in minutes: $branch_age_in_minutes" echo "Age in hours: $branch_age_in_hours"
+            echo "Age in days: $branch_age_in_days"
+
             # Add inactive branches to the list
             if [ "$branch_age_in_days" -gt 1 ]; then
               echo " $branch_name (inactive for $branch_age_in_days days) " >> inactive_branches.txt
