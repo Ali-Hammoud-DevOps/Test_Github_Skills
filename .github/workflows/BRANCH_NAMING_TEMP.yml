@@ -16,7 +16,7 @@ jobs:
           branch_name=${GITHUB_REF#refs/heads/}  # Get the branch name from GITHUB_REF
           echo "Pushed branch name: $branch_name"
           
-          shopt -s nocasematch  # Make the regex pattern matching case-insensitive
+          # shopt -s nocasematch  # Make the regex pattern matching case-insensitive
           
           # Define regex patterns for the new naming conventions
           feature_regex="^[0-9]+\.[0-9]+\.[0-9]/feature/[a-z0-9\-]+$"

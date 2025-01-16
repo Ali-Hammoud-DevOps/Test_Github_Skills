@@ -2,7 +2,7 @@ name: Notify for Inactive Branches
 
 on:
   schedule:
-    - cron: "0 8 1 * *"  # At 8:00 AM on the first day of every month
+    - cron: "0 8 * * 1"  # At 8:00 AM every Monday
   workflow_dispatch:  # Allow manual triggering of the action
 
 jobs:
