@@ -1,0 +1,9 @@
+{
+    "name": "Selfie Verification",
+    "version": "1.0",
+    "description": "A basic JSON file for selfie verification.",
+    "verification": {
+        "status": "pending",
+        "timestamp": "2023-10-01T12:00:00Z"
+    }
+}
