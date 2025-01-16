@@ -8,6 +8,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+      
+      - name: Set default branch name
+        run: echo "branch_name=${{ github.ref }}" >> $GITHUB_ENV
 
       - name: Check branch name is ok
         id: check_branch_name
@@ -48,4 +51,4 @@ jobs:
         uses: dawidd6/action-delete-branch@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branches: ${{ env.branch_name }}
+          branches: ${{ github.ref }}
