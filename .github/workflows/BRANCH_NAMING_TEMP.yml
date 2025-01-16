@@ -3,10 +3,6 @@ name: Check Create Branch Request
 on:
   create:
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   check_create_branch:
     runs-on: ubuntu-latest
@@ -14,38 +10,41 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Check if pushed branch name is ok
+      - name: Check branch name is ok
         id: check_branch_name
         run: |
           branch_name=${GITHUB_REF#refs/heads/}  # Get the branch name from GITHUB_REF
           echo "Pushed branch name: $branch_name"
 
           # Define regex patterns for the new naming conventions
-          feature_regex="^feature/[a-z0-9\-]+$"
-          bugfix_regex="^bugfix/[a-z0-9\-]+$"
-          release_regex="^release/[v0-9]+\.[0-9]+\.[0-9]+$"
-          hotfix_regex="^hotfix/[a-z0-9\-]+$"
+          feature_regex="^Release/Feature/[a-z0-9\-]+$"
+          tech_enhancement_regex="^[0-9]+\.[0-9]+\.[0-9]+/Tech-Enhancement/[a-z0-9\-]+$"
+          uix_enhancement_regex="^[0-9]+\.[0-9]+\.[0-9]+/UIX-Enhancement/[a-z0-9\-]+$"
+          planned_fix_regex="^[0-9]+\.[0-9]+\.[0-9]+/Fix/[a-z0-9\-]+$"
+          crashlytics_regex="^[0-9]+\.[0-9]+\.[0-9]+/crash/[a-z0-9\-]+$"
 
           # Check if the branch name matches any of the above patterns
           if [[ "$branch_name" =~ $feature_regex ]]; then
-            echo "Branch name matches the 'feature' pattern."
-          elif [[ "$branch_name" =~ $bugfix_regex ]]; then
-            echo "Branch name matches the 'bugfix' pattern."
-          elif [[ "$branch_name" =~ $release_regex ]]; then
-            echo "Branch name matches the 'release' pattern."
-          elif [[ "$branch_name" =~ $hotfix_regex ]]; then
-            echo "Branch name matches the 'hotfix' pattern."
+            echo "Branch name matches the 'Feature' pattern."
+          elif [[ "$branch_name" =~ $tech_enhancement_regex ]]; then
+            echo "Branch name matches the 'Tech Enhancement' pattern."
+          elif [[ "$branch_name" =~ $uix_enhancement_regex ]]; then
+            echo "Branch name matches the 'UI/UX Enhancement' pattern."
+          elif [[ "$branch_name" =~ $planned_fix_regex ]]; then
+            echo "Branch name matches the 'Planned Fix' pattern."
+          elif [[ "$branch_name" =~ $crashlytics_regex ]]; then
+            echo "Branch name matches the 'Crashlytics' pattern."
           else
             echo "Branch name does not match any recognized pattern. Exiting..."
             exit 1
           fi
 
           # Export the branch name to be used in the next step
-          echo "::set-output name=branch_name::$branch_name"
+          echo "branch_name=$branch_name" >> $GITHUB_ENV
 
       - name: Delete Branch if Invalid Naming Convention
         if: failure()  # Only run if the previous step fails (i.e., invalid branch naming)
         uses: dawidd6/action-delete-branch@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branches: ${{ steps.check_branch_name.outputs.branch_name }}
+          branches: ${{ env.branch_name }}
