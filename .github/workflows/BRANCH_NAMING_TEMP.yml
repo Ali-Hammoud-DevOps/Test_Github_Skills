@@ -1,9 +1,7 @@
 name: Check Create Branch Request
 
 on:
-  push:
-    branches:
-      - '*'
+  create:
 jobs:
   check_create_branch:
     runs-on: ubuntu-latest
