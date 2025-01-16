@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - '*'
+
 jobs:
   check_create_branch:
     runs-on: ubuntu-latest
@@ -12,15 +13,14 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set default branch name
-        run: echo "branch_name=${{ github.ref_name || 'default-branch-name' }}" >> $GITHUB_ENV
+        run: echo "branch_name=${{ github.ref }}" >> $GITHUB_ENV
 
       - name: Check branch name is ok
         id: check_branch_name
         run: |
+          # Extract branch name from the reference
           branch_name=${GITHUB_REF#refs/heads/}  # Get the branch name from GITHUB_REF
           echo "Pushed branch name: $branch_name"
-          
-          # shopt -s nocasematch  # Make the regex pattern matching case-insensitive
           
           # Define regex patterns for the new naming conventions
           feature_regex="^[0-9]+\.[0-9]+\.[0-9]/Feature/[A-Za-z0-9\-]+$"
@@ -35,7 +35,7 @@ jobs:
           elif [[ "$branch_name" =~ $tech_enhancement_regex ]]; then
             echo "Branch name matches the 'Tech Enhancement' pattern."
           elif [[ "$branch_name" =~ $uix_enhancement_regex ]]; then
-            echo "Branch name matches the 'UI/UX Enhancement' pattern."
+            echo "Branch name matches the 'UIX Enhancement' pattern."
           elif [[ "$branch_name" =~ $planned_fix_regex ]]; then
             echo "Branch name matches the 'Planned Fix' pattern."
           elif [[ "$branch_name" =~ $crashlytics_regex ]]; then
