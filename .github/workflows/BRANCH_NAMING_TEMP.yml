@@ -15,13 +15,15 @@ jobs:
         run: |
           branch_name=${GITHUB_REF#refs/heads/}  # Get the branch name from GITHUB_REF
           echo "Pushed branch name: $branch_name"
-
+          
+          shopt -s nocasematch  # Make the regex pattern matching case-insensitive
+          
           # Define regex patterns for the new naming conventions
-          feature_regex="(?i)^[0-9]+\.[0-9]+\.[0-9]/feature/[a-z0-9\-]+$"
-          tech_enhancement_regex="(?i)^[0-9]+\.[0-9]+\.[0-9]+/Tech-Enhancement/[a-z0-9\-]+$"
-          uix_enhancement_regex="(?i)^[0-9]+\.[0-9]+\.[0-9]+/UIX-Enhancement/[a-z0-9\-]+$"
-          planned_fix_regex="(?i)^[0-9]+\.[0-9]+\.[0-9]+/Fix/[a-z0-9\-]+$"
-          crashlytics_regex="(?i)^[0-9]+\.[0-9]+\.[0-9]+/crash/[a-z0-9\-]+$"
+          feature_regex="^[0-9]+\.[0-9]+\.[0-9]/feature/[a-z0-9\-]+$"
+          tech_enhancement_regex="^[0-9]+\.[0-9]+\.[0-9]+/Tech-Enhancement/[a-z0-9\-]+$"
+          uix_enhancement_regex="^[0-9]+\.[0-9]+\.[0-9]+/UIX-Enhancement/[a-z0-9\-]+$"
+          planned_fix_regex="^[0-9]+\.[0-9]+\.[0-9]+/Fix/[a-z0-9\-]+$"
+          crashlytics_regex="^[0-9]+\.[0-9]+\.[0-9]+/crash/[a-z0-9\-]+$"
 
           # Check if the branch name matches any of the above patterns
           if [[ "$branch_name" =~ $feature_regex ]]; then
